@@ -8,7 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { bodyTypes, carMakes, faqItems, featuredCars } from "@/lib/data";
+import { bodyTypes, carMakes, faqItems  } from "@/lib/data";
 import { Calendar } from "lucide-react";
 import { Car } from "lucide-react";
 import { Shield } from "lucide-react";
@@ -16,10 +16,14 @@ import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { SignedOut } from "@clerk/nextjs";
+import { getFeaturedCars } from "@/actions/home";
 
  
 
-export default function Home() {
+export default async function Home() {
+
+  const featuredCars = await getFeaturedCars();
+
   return (
     <div className="pt-20 flex flex-col">
       {/* Hero  */}
