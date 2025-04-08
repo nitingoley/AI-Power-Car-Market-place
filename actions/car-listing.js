@@ -1,6 +1,9 @@
 "use server";
 
-import { serializeCarData } from "@/lib/helpers";
+import { serializedCarData } from "../lib/helper";
+
+
+
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
@@ -67,6 +70,9 @@ export async function getCarFilters() {
     throw new Error("Error fetching car filters:" + error.message);
   }
 }
+
+// wishlisted
+
 
 // Get cars with simplified filters
 
@@ -151,10 +157,22 @@ export async function getCars({
         skip,
         orderBy
     });
-    
+       // If we have a user, check which cars are wishlisted
+       let wishlisted = new Set();
+
+       if(dbUser) {
+        const savedCars = await db.userSavedCar.findMany({
+          where: {userId: dbUser.id},
+          select: {carId: true},
+        });
+
+        wishlisted = new Set(savedCars.map((saved)=>saved.carId));
+       }
+
+
     // Serialize and check wishlist status
     const serializedCars = cars.map((car) =>
-        serializeCarData(car, wishlisted.has(car.id))
+        serializedCarData(car, wishlisted.has(car.id))
       );
 
     return {
