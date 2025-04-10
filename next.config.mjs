@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverComponentsHmrCache: false, // defaults to true
+    serverComponentsHmrCache: false,
+    turbo: false, 
   },
   images: {
     remotePatterns: [
@@ -11,7 +12,6 @@ const nextConfig = {
       },
     ],
   },
-
   async headers() {
     return [
       {
