@@ -5,7 +5,6 @@ import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
-
 /**
  * Books a test drive for a car
  */
@@ -28,11 +27,14 @@ export async function bookTestDrive({
 
     if (!user) throw new Error("User not found in database");
 
+    // Check if car exists and is available
     const car = await db.car.findUnique({
       where: { id: carId, status: "AVAILABLE" },
     });
 
     if (!car) throw new Error("Car not available for test drive");
+
+    // Check if slot is already booked
     const existingBooking = await db.testDriveBooking.findFirst({
       where: {
         carId,
@@ -48,7 +50,7 @@ export async function bookTestDrive({
       );
     }
 
-    // create the booking
+    // Create the booking
     const booking = await db.testDriveBooking.create({
       data: {
         carId,
@@ -77,6 +79,7 @@ export async function bookTestDrive({
     };
   }
 }
+
 
 /**
  * Get user's test drive bookings - reservations page
