@@ -196,7 +196,7 @@ export async function cancelTestDrive(bookingId) {
       data: { status: "CANCELLED" },
     });
 
-    // Revalidate paths
+    // Revalidate cached paths
     revalidatePath("/reservations");
     revalidatePath("/admin/test-drives");
 
@@ -208,7 +208,7 @@ export async function cancelTestDrive(bookingId) {
     console.error("Error cancelling test drive:", error);
     return {
       success: false,
-      error: error.message,
+      error: error?.message ?? "Something went wrong",
     };
   }
 }
